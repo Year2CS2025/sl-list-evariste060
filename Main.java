@@ -1,11 +1,11 @@
-package SLIST;
-
+//package SLIST;
 public class Main {
     public static void main(String[] args) {
         SLinkedList<Integer> list = new SLinkedList<>();
         list.addFirst(10);
         list.addFirst(20);
         list.addLast(5);
+        list.remove(20);
         for (Integer i : list) {
             System.out.println(i);
         }
@@ -13,6 +13,7 @@ public class Main {
         l2.addFirst(10);
         l2.addFirst(20);
         l2.addLast(5);
+        l2.remove(20);
  
         if (list.equals(l2))
             System.out.println("Hoorah");

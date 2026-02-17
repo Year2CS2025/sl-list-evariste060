@@ -1,9 +1,8 @@
-package SLIST;
-
-import java.util.Iterator;
+//package SLIST;
 import java.util.NoSuchElementException;
+import java.util.Iterator;
 
-public class SLinkedList<T> implements Iterable<T>{
+public class SLinkedList<T> implements Iterable<T> {
     class Node<T>{
         T data;
         Node<T> next;
@@ -11,16 +10,14 @@ public class SLinkedList<T> implements Iterable<T>{
             this.data=data;
             next=null;
         }
-
     }
-
     private Node<T> head;
     private Node<T> tail;
     private int size=0;
     public SLinkedList(){
         head=null;
+        head=null;
         size=0;
-
 }
     
     @Override
@@ -35,20 +32,21 @@ public class SLinkedList<T> implements Iterable<T>{
 
             @Override
             public T next() {
-                if (current == null) {
-                    throw new NoSuchElementException();
-                }
+                if (!hasNext()) throw new NoSuchElementException();
                 T data = current.data;
                 current = current.next;
                 return data;
             }
         };
     }
+
     public void addFirst(T data){
         Node<T> newNode = new Node<>(data);
         newNode.next = head;
         head = newNode;
-        tail=newNode;
+        if(tail==null){
+            tail=newNode;
+        }
         size++;
     }
     public void addLast(T data){
@@ -58,7 +56,7 @@ public class SLinkedList<T> implements Iterable<T>{
             tail=newNode;
         } else {
             tail.next = newNode;
-        }
+            tail = newNode;      }
         size++;
     }
     public int size(){
@@ -75,7 +73,7 @@ public class SLinkedList<T> implements Iterable<T>{
         head = head.next;
         size--;
         if (head == null) {
-            tail = null; // If the list becomes empty, set tail to null
+            tail = null; 
         }
         return data;
     }
@@ -83,7 +81,7 @@ public class SLinkedList<T> implements Iterable<T>{
         if (head == null) {
             throw new NoSuchElementException("List is empty");
         }
-        if (head.next == null) { // Only one element
+        if (head.next == null) { 
             T data = head.data;
             head = null;
             tail = null;
@@ -135,18 +133,82 @@ public class SLinkedList<T> implements Iterable<T>{
         }
         return tail.data;
     }
-    public void reverse(){
+
+    public void remove(T e){
         
-    //TODO
-    }
-    public void deleteConsecutiveDuplicates(){
-       //TODO
-    }
-    //two lists are equal if they have the same 
-    // size and the same elements in the same order
-    @Override
-    public boolean equals(Object obj){
-        //TODO
+        if (head == null) return;
+
+        // Case 1: head is the node to remove
+        if (head.data.equals(e)) {
+            head = head.next;
+            if (head == null) tail = null; // list became empty
+            size--;
+            return;
+        }
+
+        Node<T> prev = head;
+        Node<T> current = head.next;
+        while (current != null) {
+            if (current.data.equals(e)) {
+                prev.next = current.next;
+                if (current == tail) tail = prev; 
+                size--;
+                return;
+            }
+            prev = current;
+            current = current.next;
+        }
+
     }
 
+    public void reverse(){
+        if (head == null || head.next == null) return;
+
+        tail = head; 
+
+        Node<T> prev = null;
+        Node<T> current = head;
+        while (current != null) {
+            Node<T> next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+
+        head = prev; 
+    }
+
+    public void deleteConsecutiveDuplicates(){
+        if (head == null) return;
+
+        Node<T> current = head;
+        while (current != null && current.next != null) {
+            if (current.data.equals(current.next.data)) {
+                // skip the duplicate
+                if (current.next == tail) tail = current;
+                current.next = current.next.next;
+                size--;
+            } else {
+                current = current.next;
+            }
+        }
+    }
+
+
+    @Override
+    public boolean equals(Object obj){
+        if (this == obj) return true;
+        if (obj == null || !(obj instanceof SLinkedList)) return false;
+
+        SLinkedList<?> other = (SLinkedList<?>) obj;
+        if (this.size != other.size) return false;
+
+       
+        java.util.Iterator<T> it1 = this.iterator();
+        java.util.Iterator<?> it2 = other.iterator();
+        while (it1.hasNext()) {
+            if (!it1.next().equals(it2.next())) return false;
+        }
+        return true;
+    }
 }
